@@ -15,8 +15,6 @@
  */
 package com.googlecode.concurrenttrees.radix;
 
-import com.googlecode.concurrenttrees.common.KeyValuePair;
-
 /**
  * API of a radix tree, that is a tree which allows values to be looked up based on <i>prefixes</i> of the keys
  * with which they were associated, as well as based on exact matches for keys. A radix tree essentially allows
@@ -75,81 +73,31 @@ public interface RadixTree<O> {
     O getValueForExactKey(CharSequence key);
 
     /**
-     * Returns a lazy iterable which returns the set of keys in the tree which start with the given prefix.
+     * Returns a result which represents the set of associations in the tree which start with the given prefix.
      * <p/>
-     * This is <i>inclusive</i> - if the given prefix is an exact match for a key in the tree, that key is also
-     * returned.
+     * This is <i>inclusive</i> - if the given prefix is an exact match for an association in the tree, that
+     * association is also returned.
      *
      * @param prefix A prefix of sought keys in the tree
-     * @return The set of keys in the tree which start with the given prefix, inclusive
+     * @return The set of associations in the tree which start with the given prefix, inclusive
      */
-    Iterable<CharSequence> getKeysStartingWith(CharSequence prefix);
+    TreeSearchResult<O> searchForKeysStartingWith(CharSequence prefix);
 
     /**
-     * Returns a lazy iterable which returns the set of values associated with keys in the tree which start with the
-     * given prefix.
-     * <p/>
-     * This is <i>inclusive</i> - if the given prefix is an exact match for a key in the tree, the value associated
-     * with that key is also returned.
-     * <p/>
-     * Note that although the same value might originally have been associated with multiple keys, the set returned
-     * does not contain duplicates (as determined by the value objects' implementation of {@link Object#equals(Object)}).
-     *
-     * @param prefix A prefix of keys in the tree for which associated values are sought
-     * @return The set of values associated with keys in the tree which start with the given prefix, inclusive
-     */
-    Iterable<O> getValuesForKeysStartingWith(CharSequence prefix);
-
-    /**
-     * Returns a lazy iterable which returns the set of {@link KeyValuePair}s for keys and their associated values
-     * in the tree, where the keys start with the given prefix.
-     * <p/>
-     * This is <i>inclusive</i> - if the given prefix is an exact match for a key in the tree, the {@link KeyValuePair}
-     * for that key is also returned.
-     *
-     * @param prefix A prefix of keys in the tree for which associated {@link KeyValuePair}s are sought
-     * @return The set of {@link KeyValuePair}s for keys in the tree which start with the given prefix, inclusive
-     */
-    Iterable<KeyValuePair<O>> getKeyValuePairsForKeysStartingWith(CharSequence prefix);
-
-    /**
-     * Returns a lazy iterable which returns the set of keys in the tree which are the closest match for the given
-     * candidate key.
+     * Returns a result which represents the set of associations in the tree which are the closest match for the
+     * given candidate key.
      * <p/>
      * Example:<br/>
      * Tree contains: {@code Ford Focus}, {@code Ford Mondeo}, {@code BMW M3}<br/>
-     * <code>getClosestKeys("Ford F150")</code> -> returns {@code Ford Focus}, {@code Ford Mondeo}<br/>
+     * <code>searchForClosestKeys("Ford F150")</code> -> returns {@code Ford Focus}, {@code Ford Mondeo}<br/>
      * <p/>
-     * This is <i>inclusive</i> - if the given candidate is an exact match for a key in the tree, that key is also
-     * returned.
+     * This is <i>inclusive</i> - if the given prefix is an exact match for an association in the tree, that
+     * association is also returned.
      *
      * @param candidate A candidate key
-     * @return The set of keys in the tree which most closely match the candidate key, inclusive
+     * @return The set of associations in the tree which most closely match the candidate key, inclusive
      */
-    Iterable<CharSequence> getClosestKeys(CharSequence candidate);
-
-    /**
-     * Returns a lazy iterable which returns the set of values associated with keys in the tree which are the closest
-     * match for the given candidate key.
-     * <p/>
-     * See {#getClosestKeys} for more details.
-     *
-     * @param candidate A candidate key
-     * @return The set of values associated with keys in the tree which most closely match the candidate key, inclusive
-     */
-    Iterable<O> getValuesForClosestKeys(CharSequence candidate);
-
-    /**
-     * Returns a lazy iterable which returns the set of {@link KeyValuePair}s for keys and their associated values in
-     * the tree which are the closest match for the given candidate key.
-     * <p/>
-     * See {#getClosestKeys} for more details.
-     *
-     * @param candidate A candidate key
-     * @return The set of {@link KeyValuePair}s for keys and their associated values in the tree which most closely
-     * match the candidate key, inclusive
-     */
-    Iterable<KeyValuePair<O>> getKeyValuePairsForClosestKeys(CharSequence candidate);
+    TreeSearchResult<O> searchForClosestKeys(CharSequence candidate);
 
     /**
      * Counts the number of keys/values stored in the tree.
