@@ -42,7 +42,8 @@ public class DefaultByteArrayNodeFactory implements NodeFactory {
         if (edgeCharacters == null) {
             throw new IllegalStateException("The edgeCharacters argument was null");
         }
-        if (!isRoot && edgeCharacters.length() == 0) {
+        int edgeLength = edgeCharacters.length();
+        if (!isRoot && edgeLength == 0) {
             throw new IllegalStateException("Invalid edge characters for non-root node: " + CharSequences.toString(edgeCharacters));
         }
         if (childNodes == null) {
@@ -52,25 +53,25 @@ public class DefaultByteArrayNodeFactory implements NodeFactory {
         if (childNodes.isEmpty()) {
             // Leaf node...
             if (value instanceof VoidValue) {
-                return new ByteArrayNodeLeafVoidValue(edgeCharacters);
+                return edgeLength == 1 ? new SingleByteNodeLeafVoidValue(edgeCharacters.charAt(0)) : new ByteArrayNodeLeafVoidValue(edgeCharacters);
             }
             else if (value != null) {
-                return new ByteArrayNodeLeafWithValue(edgeCharacters, value);
+                return edgeLength == 1 ? new SingleByteNodeLeafWithValue(edgeCharacters.charAt(0), value) : new ByteArrayNodeLeafWithValue(edgeCharacters, value);
             }
             else {
-                return new ByteArrayNodeLeafNullValue(edgeCharacters);
+                return edgeLength == 1 ? new SingleByteNodeLeafNullValue(edgeCharacters.charAt(0)) : new ByteArrayNodeLeafNullValue(edgeCharacters);
             }
         }
         else {
             // Non-leaf node...
             if (value instanceof VoidValue) {
-                return new ByteArrayNodeNonLeafVoidValue(edgeCharacters, childNodes);
+                return edgeLength == 1 ? new SingleByteNodeNonLeafVoidValue(edgeCharacters.charAt(0), childNodes) : new ByteArrayNodeNonLeafVoidValue(edgeCharacters, childNodes);
             }
             else if (value == null) {
-                return new ByteArrayNodeNonLeafNullValue(edgeCharacters, childNodes);
+                return edgeLength == 1 ? new SingleByteNodeNonLeafNullValue(edgeCharacters.charAt(0), childNodes) : new ByteArrayNodeNonLeafNullValue(edgeCharacters, childNodes);
             }
             else {
-                return new ByteArrayNodeDefault(edgeCharacters, value, childNodes);
+                return edgeLength == 1 ? new SingleByteNodeDefault(edgeCharacters.charAt(0), value, childNodes) : new ByteArrayNodeDefault(edgeCharacters, value, childNodes);
             }
         }
     }
